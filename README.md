@@ -1,4 +1,7 @@
 # pollutioncollector
+The aim of this API is to manage a robot which picks pollution data along a given route defined as polyline.
+Robot picks data every distanec interval as meters.
+Then, a stream api will be dispose as way to get a pollution data report diplayed evey n minutes
 To test start data picker (data pollution collector) use this curl
 ```sh
 curl --request POST \
