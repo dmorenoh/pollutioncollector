@@ -1,19 +1,82 @@
-# pollutioncollector
-The aim of this API is to manage a robot which picks pollution data along a given route defined as polyline.
-Robot picks data every distanec interval as meters.
-Then, a stream api will be dispose as way to get a pollution data report diplayed evey n minutes
-To test start data picker (data pollution collector) use this curl
-```sh
+
+
+## Overview
+
+Implemented solution was faced by using concepts/tools as: hexagonal, message driven (eventbus), webflux
+
+## Use cases
+Use cases are depicted as commands/queries:
+
+**1. Start API (Command)**
+-- Method: *POST*
+-- Endpoint ```http://localhost:8082/myapp/start```
+-- Request body
+```
+{
+    "robotName":"[robot name]",
+    "stopInterval":[double value as kms],
+    "speed":[double value expressed as meters per seconds],
+    "polylineEncoded":"[polyline encoded]"
+}
+```
+Example:
+```
 curl --request POST \
   --url http://localhost:8082/myapp/start \
   --header 'content-type: application/json' \
-  --data '{  
-	"robotName":"name",
-	"speed":100,
-"polylineEncoded":"mpjyHx`i@VjAVKnAh@BHHX@LZR@Bj@Ml@WWc@]w@bAyAfBmCb@o@pLeQfCsDVa@@ODQR}AJ{A?{BGu AD_@FKb@MTUX]Le@^kBVcAVo@Ta@|EaFh@m@FWaA{DCo@q@mCm@cC{A_GWeA}@sGSeAcA_EOSMa @}A_GsAwFkAiEoAaFaBoEGo@]_AIWW{AQyAUyBQqAI_BFkEd@aHZcDlAyJLaBPqDDeD?mBEiA}@F]yKWqGSkI CmCIeZIuZi@_Sw@{WgAoXS{DOcAWq@KQGIFQDGn@Y`@MJEFIHyAVQVOJGHgFRJBBCCSKBcAKoACyA?m@^y VJmLJ{FGGWq@e@eBIe@Ei@?q@Bk@Hs@Le@Rk@gCuIkJcZsDwLd@g@Oe@o@mB{BgHQYq@qBQYOMSM GBUBGCYc@E_@H]DWJST?JFFHBDNBJ?LED?LBv@WfAc@@EDGNK|@e@hAa@`Bk@b@OEk@Go@IeACoA@ a@PyB`@yDDc@e@K{Bi@oA_@w@]m@_@]QkBoAwC{BmAeAo@s@uAoB_AaBmAwCa@mAo@iCgAwFg@iD q@}G[uEU_GBuP@cICmA?eI?qCB{FBkCI}BOyCMiAGcAC{AN{YFqD^}FR}CNu@JcAHu@b@_E`@}DVsB^mBTsAQ KkCmAg@[YQOIOvAi@[m@e@s@g@GKCKAEJIn@g@GYGIc@ScBoAf@{A`@uAlBfAG`@"
+  --data '{
+    "robotName":"test",
+    "stopInterval":0.1,
+    "speed":3.00,
+    "polylineEncoded":"ivo~Fhe}uO`MoAlKi@"
 }'
 ```
-Once started, please check the reports with this
-```sh
+**3. Stop (Command)**
+-- Method: *POST*
+-- Endpoint ```http://localhost:8082/myapp/stop```
+-- Request body: N/A
+Example:
+```
+curl -X POST http://localhost:8082/myapp/stop
+```
+**4. Reroute (Command)**
+-- Method: *POST*
+-- Endpoint ```http://localhost:8082/myapp/reroute```
+-- Request body
+```
+{
+    "polylineEncoded":"[polyline encoded]"
+}
+```
+Example:
+```
+curl --request POST \
+  --url http://localhost:8082/myapp/reroute \
+  --header 'content-type: application/json' \
+  --data '{
+    "polylineEncoded":"_po~Fpb}uOvHa@xHs@"
+}'
+```
+**5. Get report (Query)**
+-- Method: *GET*
+-- Endpoint ```http://localhost:8082/myapp/reports``` 
+-- Request body: N/A
+
+Example (execute as streams):
+```
 curl -S http://localhost:8082/myapp/reports
 ```
+
+## Considerations
+Time interval considered in order to display reports can be set in `application.properties` file 
+```
+report.interval.seconds=10
+```
+As you can see, It' currently set as 10 seconds. This means new report result is added each 10 seconds.
+ 
+## Technical debts
+
+Full test coverage over existing endpoints, just few of them were tested using RestAssured/Spock
+
+ 
+
