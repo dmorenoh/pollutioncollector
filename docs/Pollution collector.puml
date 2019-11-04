@@ -1,0 +1,7 @@
+@startuml
+User --> (Start pollution collection)
+User --> (Stop pollution collection)
+User --> (Re-route pollution collector)
+
+
+@enduml

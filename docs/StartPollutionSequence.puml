@@ -1,0 +1,11 @@
+@startuml
+actor User
+boundary Endpoint
+control PollutionCollectorCommandHandler
+entity eventBus
+User -> Endpoint: start pollution collection
+Endpoint -> PollutionCollectorCommandHandler: startPollutionCollection
+PollutionCollectorCommandHandler -> PollutionCollectorCommandHandler: initializePollutionCollector
+PollutionCollectorCommandHandler -> eventBus: publish(PollutionCollectionStartedEvent)
+
+@enduml

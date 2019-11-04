@@ -1,0 +1,11 @@
+@startuml
+actor EventBus
+boundary EventHandler
+control RobotCommandHandler
+entity Robot
+database PollutionValues
+EventBus -> EventHandler: handle(PollutionCollectionStartedEvent)
+EventHandler -> RobotCommandHandler: moveRobot
+RobotCommandHandler -> Robot:moveToSpecificPoint
+RobotCommandHandler -> PollutionValues: save(PMValue)
+@enduml

@@ -72,7 +72,9 @@ Time interval considered in order to display reports can be set in `application.
 ```
 report.interval.seconds=10
 ```
-As you can see, It' currently set as 10 seconds. This means new report result is added each 10 seconds.
+As you can see, It's currently set as 10 seconds. This means new report result is added each 10 seconds.
+
+Distance calculation formulas taken from: `https://www.movable-type.co.uk/scripts/latlong.html`
  
 ## Technical debts
 
