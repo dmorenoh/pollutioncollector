@@ -1,11 +1,9 @@
 package com.domain.robot.model;
 
-import com.application.queryhandler.RobotCollectorQueryHandler;
 import com.domain.exception.PollutionCollectorException;
 import com.domain.pm.model.PMValue;
-import com.google.maps.model.LatLng;
-import com.domain.utils.DistanceCalculator;
 import com.domain.utils.GreatCircleDistance;
+import com.google.maps.model.LatLng;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
@@ -14,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.domain.utils.DistanceCalculator.getDestination;
-import static com.domain.utils.DistanceCalculator.getGreatCircleDistance;
 
 @Data
 public class RobotCollector
@@ -94,14 +91,13 @@ public class RobotCollector
     }
 
 
-    private synchronized void moveTo(LatLng latLng)
+    public synchronized void move(final GreatCircleDistance greatCircleDistance)
     {
-        LOG.info("Robot position:{}", this.currentPosition);
         if (this.isFinished())
         {
             throw new PollutionCollectorException("robot stopped");
         }
-        double distanceInMeters = Math.round(DistanceCalculator.distance(currentPosition, latLng) * 1000);
+        double distanceInMeters = Math.round(greatCircleDistance.getDistanceKm() * 1000);
         double delayedSeconds = distanceInMeters / speedAsMtrsPerSecond;
         try
         {
@@ -111,23 +107,36 @@ public class RobotCollector
         {
             throw new PollutionCollectorException("error while moving");
         }
-        this.currentPosition = latLng;
+        this.currentPosition = greatCircleDistance.getEndPoint();
     }
 
 
-    public void moveWithoutStopping(final LatLng nextPosition)
+    public void moveWithoutStopping(GreatCircleDistance distance)
     {
-        GreatCircleDistance distance = getGreatCircleDistance(this.currentPosition, nextPosition);
-        this.moveTo(nextPosition);
+        this.move(distance);
         this.distanceWithoutStopping = distanceWithoutStopping + distance.getDistanceKm();
     }
 
 
     public void moveToCollectionStop(double initialBearing)
     {
-        final LatLng nextStop = getDestination(this.currentPosition, initialBearing, this.stopDistanceInterval - this.distanceWithoutStopping);
-        this.moveTo(nextStop);
+        double distance = this.stopDistanceInterval - this.distanceWithoutStopping;
+        final LatLng nextStop = getDestination(this.currentPosition, initialBearing, distance);
+
+        GreatCircleDistance greatCircleDistance = GreatCircleDistance.builder()
+            .distanceKm(distance)
+            .initialPoint(this.currentPosition)
+            .endPoint(nextStop).build();
+
+        this.move(greatCircleDistance);
+
         this.distanceWithoutStopping = 0;
+    }
+
+
+    public boolean hasStopCollectionInTheWay(double distanceToWalk)
+    {
+        return (distanceToWalk + this.distanceWithoutStopping) >= this.stopDistanceInterval;
     }
 
 
@@ -161,5 +170,12 @@ public class RobotCollector
     public boolean isFinished()
     {
         return this.status == RobotStatus.FINISHED;
+    }
+
+
+    public LatLng getCollectionStopPosition(double bearing)
+    {
+        double distance = this.stopDistanceInterval - this.distanceWithoutStopping;
+        return getDestination(this.currentPosition, bearing, distance);
     }
 }

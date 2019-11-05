@@ -25,24 +25,24 @@ public class RobotCollectorCommandHandler
         RobotCollector robotCollector = command.getRobotCollector();
 
         LOG.info("Current robot status:{}", robotCollector.getStatus());
+
         while (!robotCollector.currentPositionIs(command.getDestination()))
         {
-            GreatCircleDistance distanceToNextPosition = getGreatCircleDistance(
+            final GreatCircleDistance distanceToNextPosition = getGreatCircleDistance(
                 robotCollector.getCurrentPosition(),
                 command.getDestination());
 
-            LOG.info("Distance to walk:{}", distanceToNextPosition.getDistanceKm());
-            if (distanceToNextPosition.getDistanceKm() + robotCollector.getDistanceWithoutStopping() >= robotCollector.getStopDistanceInterval())
+            if (robotCollector.hasStopCollectionInTheWay(distanceToNextPosition.getDistanceKm()))
             {
                 robotCollector.moveToCollectionStop(distanceToNextPosition.getInitialBearing());
                 repository.save(robotCollector.readPollutionValue());
             }
             else
             {
-                robotCollector.moveWithoutStopping(command.getDestination());
+                robotCollector.moveWithoutStopping(distanceToNextPosition);
             }
-
         }
     }
+
 
 }

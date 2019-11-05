@@ -21,6 +21,10 @@ class RobotCollectorQueryHandlerSpec extends Specification {
     private static final double STOP_INTERVAL_AS_KM = 0.1D
     private static final int SPEED = 50
 
+    def setup() {
+        RobotCollector.clear()
+    }
+
     def "should fail when there is no any robot"() {
         when: "request report"
             robotCollectorQueryHandler.getReport()

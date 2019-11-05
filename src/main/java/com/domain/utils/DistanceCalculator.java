@@ -16,7 +16,7 @@ public class DistanceCalculator
 
     public static GreatCircleDistance getGreatCircleDistance(LatLng origin, LatLng destination)
     {
-        return new GreatCircleDistance(origin, destination, distance(origin, destination), bearing(origin, destination), bearing(destination, origin));
+        return new GreatCircleDistance(origin, destination, distance(origin, destination), bearing(origin, destination));
     }
 
 

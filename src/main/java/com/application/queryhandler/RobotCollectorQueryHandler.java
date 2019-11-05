@@ -6,8 +6,6 @@ import com.domain.pm.model.PM25Report;
 import com.domain.pm.repository.PMValueRepository;
 import com.domain.robot.model.RobotCollector;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component

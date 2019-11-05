@@ -24,6 +24,7 @@ class PollutionCollectorCommandControllerSpec extends Specification {
     private static final String VALID_REQUEST = "{\n" +
             "    \"robotName\":\"test\",\n" +
             "    \"speed\":10.00,\n" +
+            "    \"stopInterval\":0.1,\n" +
             "    \"polylineEncoded\":\"uim~Ftd}uO}`@wB\"\n" +
             "}"
 
