@@ -1,11 +1,11 @@
 package com.application.commandhandler;
 
 import com.domain.exception.PollutionCollectorException;
-import com.domain.robot.model.RobotCollector;
 import com.domain.pollutioncollector.command.ReroutePollutionCollectorCommand;
 import com.domain.pollutioncollector.command.StartPollutionCollectorCommand;
 import com.domain.pollutioncollector.command.StopPollutionCollectorCommand;
 import com.domain.pollutioncollector.event.PollutionCollectorStartedEvent;
+import com.domain.robot.model.RobotCollector;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.EventBus;
 import com.google.maps.model.LatLng;
@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 public class PollutionCollectorCommandHandler
 {
     private static final Logger LOG = LoggerFactory.getLogger(PollutionCollectorCommandHandler.class);
-    private static final double STOP_DISTANCE_INTERVAL = 0.1D;
-    private static final double SPEED_AS_MTRS_PER_SECOND = 3.00D;
     private final EventBus eventBus;
 
 
